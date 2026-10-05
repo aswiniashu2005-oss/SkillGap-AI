@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Analysis - SkillGap AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .analysis-page {
+            min-height: 90vh;
+            padding: 60px 10%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .analysis-card {
+            width: 100%;
+            max-width: 700px;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(40, 40, 100, 0.12);
+        }
+
+        .analysis-card h1 {
+            text-align: center;
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+
+        .analysis-card > p {
+            text-align: center;
+            color: #777;
+            margin-bottom: 35px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #6c63ff;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .skill-option {
+            padding: 12px;
+            background: #f7f9ff;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .skill-option label {
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .skill-option input {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        .analyze-btn {
+            width: 100%;
+            margin-top: 15px;
+            padding: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .analysis-card {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            SkillGap <span>AI</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+        </div>
+    </nav>
+
+    <section class="analysis-page">
+
+        <div class="analysis-card">
+
+            <h1>Skill Analysis</h1>
+
+            <p>
+                Tell us about your skills and career goal.
+            </p>
+
+            <form action="/analyze" method="POST">
+
+                <div class="form-group">
+                    <label>Your Name</label>
+                    <input type="text"
+                           name="username"
+                           placeholder="Enter your name"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label>Target Career</label>
+
+                    <select name="career" required>
+                        <option value="">Select your career</option>
+                        <option>Data Analyst</option>
+                        <option>Full Stack Developer</option>
+                        <option>Data Scientist</option>
+                        <option>AI / ML Engineer</option>
+                        <option>UI/UX Designer</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Experience Level</label>
+
+                    <select name="experience" required>
+                        <option value="">Select experience level</option>
+                        <option>Beginner</option>
+                        <option>Intermediate</option>
+                        <option>Advanced</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+
+                    <label>Your Current Skills</label>
+
+                    <div class="skills-grid">
+
+                        <div class="skill-option">
+                            <label>
+                                <input type="checkbox" name="skills"
+                                value="Python">
+                                Python
+                            </label>
+                        </div>
+
+                        <div class="skill-option">
+                            <label>
+                                <input type="checkbox" name="skills" value="SQL">
+                                SQL
+                            </label>
+                        </div>
+
+                        <div class="skill-option">
+                            <label>
+                                <input type="checkbox" name="skills" value="Power BI">
+                                Power BI
+                            </label>
+                        </div>
+
+                        <div class="skill-option">
+                            <label>
+                                <input type="checkbox" name="skills" value="Excel">
+                                Excel
+                            </label>
+                        </div>
+
+                        <div class="skill-option">
+                            <label>
+                                <input type="checkbox" name="skills" value="HTML & CSS">
+                                HTML & CSS
+                            </label>
+                        </div>
+
+                        <div class="skill-option">
+                            <label>
+                                <input type="checkbox" name="skills" value="javaScript">
+                                JavaScript
+                            </label>
+                        </div>
+
+                        <div class="skill-option">
+                            <label>
+                                <input type="checkbox" name="skills" value="Java">
+                                Java
+                            </label>
+                        </div>
+
+                        <div class="skill-option">
+                            <label>
+                                <input type="checkbox" name="skills" value="Machine Learning">
+                                Machine Learning
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+
+                <button type="submit" class="analyze-btn">
+                    Analyze My Skills →
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+</body>
+</html>

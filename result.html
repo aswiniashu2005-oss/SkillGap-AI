@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Skill Gap Result - SkillGap AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        /* =========================
+           RESULT PAGE
+        ========================= */
+
+        .result-page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 50px 20px;
+        }
+
+        /* Header */
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .result-header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .result-header p {
+            color: #777;
+            font-size: 17px;
+            margin: 6px 0;
+        }
+
+        /* Main Grid */
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
+        }
+
+        /* Cards */
+
+        .result-card {
+            background: white;
+            padding: 28px;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: all 0.25s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+        }
+
+        .result-card h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        /* =========================
+           READINESS
+        ========================= */
+
+        .score {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 15px;
+            background: #f8faff;
+            border-radius: 15px;
+        }
+
+        .score-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: #5b7cfa;
+        }
+
+        .score p {
+            color: #666;
+            font-size: 15px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 12px;
+            background: #e8ebf3;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 18px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #5b7cfa;
+            border-radius: 20px;
+            transition: width 0.6s ease;
+        }
+
+        /* =========================
+           SKILLS
+        ========================= */
+
+        .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .skill {
+            background: #eef2ff;
+            padding: 9px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .missing {
+            background: #fff0f0;
+            color: #c0392b;
+        }
+
+        /* =========================
+           PRIORITY GAPS
+        ========================= */
+
+        .priority-item {
+            background: #fff7f7;
+            border-left: 5px solid #e74c3c;
+            padding: 15px 18px;
+            margin: 12px 0;
+            border-radius: 10px;
+            line-height: 1.6;
+        }
+
+        .priority-item strong {
+            font-size: 17px;
+        }
+
+        .priority-label {
+            color: #c0392b;
+            font-weight: 600;
+        }
+
+        /* =========================
+           ROADMAP
+        ========================= */
+
+        .roadmap {
+            margin-top: 25px;
+        }
+
+        .roadmap h2 {
+            margin-bottom: 22px;
+        }
+
+        .roadmap-item {
+            background: #f7f9fc;
+            border-left: 5px solid #5b7cfa;
+            padding: 18px 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            line-height: 1.7;
+            transition: all 0.2s ease;
+        }
+
+        .roadmap-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.07);
+        }
+
+        .roadmap-week {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .roadmap-skill {
+            display: block;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .roadmap-task {
+            display: block;
+            margin-top: 4px;
+            color: #666;
+        }
+
+        /* =========================
+           ANALYZE AGAIN BUTTON
+        ========================= */
+
+        .back-btn {
+            display: block;
+            width: fit-content;
+            margin: 35px auto 10px;
+            padding: 13px 30px;
+            background: #5b7cfa;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background: #4565df;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        /* =========================
+           LOADING
+        ========================= */
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            color: #5b7cfa;
+            font-weight: 600;
+        }
+
+        .spinner {
+            width: 28px;
+            height: 28px;
+            border: 4px solid #e5e9f2;
+            border-top: 4px solid #5b7cfa;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            .result-page {
+                padding: 30px 15px;
+            }
+
+            .result-header h1 {
+                font-size: 30px;
+            }
+
+            .result-header p {
+                font-size: 15px;
+            }
+
+            .result-grid {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+
+            .result-card {
+                padding: 20px;
+            }
+
+            .score-value {
+                font-size: 40px;
+            }
+
+            .roadmap-item {
+                padding: 15px;
+                font-size: 14px;
+            }
+
+            .roadmap-week {
+                font-size: 17px;
+            }
+
+            .back-btn {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVBAR
+    ========================= -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            SkillGap <span>AI</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+        </div>
+
+    </nav>
+
+
+    <!-- =========================
+         RESULT PAGE
+    ========================= -->
+
+    <section class="result-page">
+
+        <!-- Header -->
+
+        <div class="result-header">
+
+            <h1>Your Skill Gap Report</h1>
+
+            <p>
+                Personalized analysis for
+                <strong>{{ username }}</strong>
+            </p>
+
+            <p>
+                Target Career:
+                <strong>{{ career }}</strong>
+            </p>
+
+        </div>
+
+
+        <!-- =========================
+             RESULT CARDS
+        ========================= -->
+
+        <div class="result-grid">
+
+
+            <!-- Career Readiness -->
+
+            <div class="result-card">
+
+                <h2>🎯 Career Readiness</h2>
+
+                <div class="score">
+
+                    <div class="score-value">
+                        {{ readiness }}%
+                    </div>
+
+                    <div class="progress-container">
+
+                        <div class="progress-bar"
+                             style="width: {{ readiness }}%;">
+                        </div>
+
+                    </div>
+
+                    <p>
+                        Your current skill match for your target career.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Current Skills -->
+
+            <div class="result-card">
+
+                <h2>💡 Current Skills</h2>
+
+                <div class="skill-list">
+
+                    {% for skill in current_skills %}
+
+                        <span class="skill">
+                            {{ skill }}
+                        </span>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+            <!-- Required Skills -->
+
+            <div class="result-card">
+
+                <h2>📌 Required Skills</h2>
+
+                <div class="skill-list">
+
+                    {% for skill in required_skills %}
+
+                        <span class="skill">
+                            {{ skill }}
+                        </span>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+            <!-- Missing Skills -->
+
+            <div class="result-card">
+
+                <h2>⚠️ Missing Skills</h2>
+
+                <div class="skill-list">
+
+                    {% for skill in missing_skills %}
+
+                        <span class="skill missing">
+                            {{ skill }}
+                        </span>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+            <!-- Priority Gaps -->
+
+            <div class="result-card">
+
+                <h2>🚨 Priority Skill Gaps</h2>
+
+                {% for item in priority_gaps %}
+
+                    <div class="priority-item">
+
+                        <strong>
+                            {{ item.skill }}
+                        </strong>
+
+                        <span class="priority-label">
+                            — {{ item.priority }} Priority
+                        </span>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             4 WEEK ROADMAP
+        ========================= -->
+
+        <div class="result-card roadmap">
+
+            <h2>📚 4-Week Learning Roadmap</h2>
+
+            {% for item in roadmap %}
+
+                <div class="roadmap-item">
+
+                    <span class="roadmap-week">
+                        {{ loop.index }}. {{ item.week }}
+                    </span>
+
+                    <span class="roadmap-skill">
+                        {{ item.skill }}
+                    </span>
+
+                    <span class="roadmap-task">
+                        {{ item.task }}
+                    </span>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- =========================
+             ANALYZE AGAIN
+        ========================= -->
+
+        <a href="/skills"
+           class="back-btn"
+           onclick="showLoading()">
+
+            🔄 Analyze Again
+
+        </a>
+
+
+        <!-- Loading -->
+
+        <div class="loading" id="loading">
+
+            <div class="spinner"></div>
+
+            Preparing a new analysis...
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================= -->
+
+    <script>
+
+        function showLoading() {
+
+            document.getElementById("loading").style.display = "block";
+
+        }
+
+    </script>
+
+</body>
+</html>
